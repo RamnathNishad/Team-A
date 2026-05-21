@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
+
+process.env.SWC_BINARY_URL = '';
+
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: false,
   images: {
     remotePatterns: [
       {
@@ -9,9 +11,6 @@ const nextConfig = {
         hostname: '**',
       },
     ],
-  },
-  env: {
-    NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/api',
   },
 };
 
