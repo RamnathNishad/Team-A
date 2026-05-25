@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartLoan Platform - Refined User Stories</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Calibri', 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+        .document {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 40px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            line-height: 1.8;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #2563eb;
+            padding-bottom: 30px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 28px;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 14px;
+            color: #666;
+            margin: 5px 0;
+        }
+        .metadata {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e5e7eb;
+        }
+        .meta-item {
+            font-size: 12px;
+        }
+        .meta-item strong {
+            color: #1e3a8a;
+        }
+        .toc {
+            background: #f0f9ff;
+            border-left: 4px solid #2563eb;
+            padding: 20px;
+            margin: 30px 0;
+            page-break-inside: avoid;
+        }
+        .toc h2 {
+            font-size: 18px;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+        .toc ol {
+            margin-left: 20px;
+        }
+        .toc li {
+            margin: 8px 0;
+            font-size: 13px;
+        }
+        .module-section {
+            margin: 40px 0;
+            page-break-inside: avoid;
+        }
+        .module-title {
+            font-size: 22px;
+            color: #1e3a8a;
+            border-bottom: 2px solid #2563eb;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            margin-top: 30px;
+        }
+        .subsection-title {
+            font-size: 16px;
+            color: #1e40af;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .story-card {
+            border: 1px solid #e5e7eb;
+            border-left: 4px solid #2563eb;
+            padding: 20px;
+            margin: 15px 0;
+            background: #fafafa;
+            page-break-inside: avoid;
+        }
+        .story-id {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .story-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+        .story-meta {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+        .meta-badge {
+            padding: 5px 10px;
+            background: #e0e7ff;
+            border-radius: 3px;
+            color: #3730a3;
+            font-weight: bold;
+        }
+        .story-content h4 {
+            font-size: 12px;
+            color: #374151;
+            margin-top: 12px;
+            margin-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .story-content p {
+            font-size: 13px;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        .story-content ul {
+            margin-left: 20px;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+        .story-content li {
+            margin-bottom: 5px;
+            line-height: 1.5;
+        }
+        .api-spec {
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            padding: 12px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            overflow-x: auto;
+            border-radius: 3px;
+        }
+        .acceptance-criteria {
+            background: #ecfdf5;
+            border-left: 3px solid #10b981;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 2px;
+        }
+        .technical-requirements {
+            background: #fef3c7;
+            border-left: 3px solid #f59e0b;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 2px;
+        }
+        .priority-critical {
+            color: #dc2626;
+            font-weight: bold;
+        }
+        .priority-high {
+            color: #d97706;
+            font-weight: bold;
+        }
+        .priority-medium {
+            color: #f59e0b;
+        }
+        .priority-low {
+            color: #10b981;
+        }
+        .page-break {
+            page-break-after: always;
+            margin: 40px 0;
+        }
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 12px;
+        }
+        th, td {
+            border: 1px solid #d1d5db;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background: #f3f4f6;
+            font-weight: bold;
+            color: #1f2937;
+        }
+        tr:nth-child(even) {
+            background: #f9fafb;
+        }
+        .component-structure {
+            background: #f0f9ff;
+            border: 1px solid #bfdbfe;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            border-radius: 3px;
+        }
+        .db-schema {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            border-radius: 3px;
+        }
+        @media print {
+            body {
+                background: white;
+            }
+            .document {
+                box-shadow: none;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="document">
+        <!-- Header -->
+        <div class="header">
+            <h1>SmartLoan Platform</h1>
+            <h2 style="font-size: 18px; color: #2563eb; margin-top: 5px;">Refined User Stories Document</h2>
+            <p style="margin-top: 15px; font-style: italic;">Final Version 2.0</p>
+            
+            <div class="metadata">
+                <div class="meta-item"><strong>Version:</strong> 2.0</div>
+                <div class="meta-item"><strong>Date:</strong> May 21, 2026</div>
+                <div class="meta-item"><strong>Status:</strong> Final</div>
+                <div class="meta-item"><strong>Project:</strong> Loan Application Management</div>
+                <div class="meta-item"><strong>Organization:</strong> Tavant Technologies</div>
+                <div class="meta-item"><strong>Total Stories:</strong> 90+</div>
+            </div>
+        </div>
+
+        <!-- Table of Contents -->
+        <div class="toc">
+            <h2>Table of Contents</h2>
+            <ol>
+                <li>Document Overview</li>
+                <li>Authentication Module</li>
+                <li>Customer Portal Module</li>
+                <li>Loan Application Module</li>
+                <li>Document Management Module</li>
+                <li>Application Tracking Module</li>
+                <li>Loan Calculator Module</li>
+                <li>Admin Panel Module</li>
+                <li>Integration Stories</li>
+                <li>System Integration Points</li>
+            </ol>
+        </div>
+
+        <!-- Document Overview -->
+        <div class="module-section">
+            <h2 class="module-title">1. Document Overview</h2>
+            <p>This document provides refined user stories organized by:</p>
+            <ul>
+                <li><strong>Module/Feature:</strong> Logical grouping of related functionality</li>
+                <li><strong>Page:</strong> Specific UI page/screen</li>
+                <li><strong>Frontend Stories:</strong> Client-side implementation requirements</li>
+                <li><strong>Backend Stories:</strong> Server-side logic and APIs</li>
+                <li><strong>Integration Stories:</strong> Third-party and system integrations</li>
+            </ul>
+
+            <h3 class="subsection-title">Story Format</h3>
+            <div class="api-spec">Story ID: [Module]-[Type]-[Number]
+Title: [Concise title]
+Type: Frontend/Backend/Integration
+Module: [Module name]
+Page: [Page name or N/A]
+Priority: Critical/High/Medium/Low
+Complexity: 1-13 (Story points)</div>
+        </div>
+
+        <!-- Authentication Module -->
+        <div class="module-section">
+            <h2 class="module-title">2. Authentication Module</h2>
+            
+            <h3 class="subsection-title">2.1 Customer Registration Page</h3>
+
+            <div class="story-card">
+                <span class="story-id">CUST-FE-001</span>
+                <div class="story-title">Customer Registration Form UI</div>
+                <div class="story-meta">
+                    <div class="meta-badge">Frontend</div>
+                    <div class="meta-badge" style="background: #dbeafe; color: #0c4a6e;">Register</div>
+                    <div class="meta-badge" style="background: #fee2e2; color: #7c2d12;"><span class="priority-critical">Critical</span></div>
+                    <div class="meta-badge" style="background: #f3e8ff; color: #6b21a8;">5 pts</div>
+                </div>
+
+                <div class="story-content">
+                    <h4>Description</h4>
+                    <p>As a prospective customer, I want to see a registration form where I can enter my details and create an account.</p>
+
+                    <h4>Acceptance Criteria</h4>
+                    <div class="acceptance-criteria">
+                        <ul>
+                            <li>Display form fields: Email, Phone, Password, Confirm Password</li>
+                            <li>Show password strength indicator (Weak/Medium/Strong)</li>
+                            <li>Mark all fields as required with asterisk (*)</li>
+                            <li>Display password requirements (Min 8 chars, 1 uppercase, 1 number, 1 special char)</li>
+                            <li>Show real-time validation errors below each field</li>
+                            <li>Disable Submit button until form is valid</li>
+                            <li>Show "Already have account? Login" link</li>
+                            <li>Responsive design for mobile (375px), tablet (768px), desktop (1920px)</li>
+                        </ul>
+                    </div>
+
+                    <h4>Technical Requirements</h4>
+                    <div class="technical-requirements">
+                        <ul>
+                            <li>Use React form library (React Hook Form)</li>
+                            <li>Implement client-side validation using Zod</li>
+                            <li>Email regex validation</li>
+                            <li>Password regex with strength requirements</li>
+                            <li>Store form state in React component state</li>
+                            <li>Styling using Tailwind CSS with consistent spacing</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="story-card">
+                <span class="story-id">CUST-BE-001</span>
+                <div class="story-title">User Registration Endpoint</div>
+                <div class="story-meta">
+                    <div class="meta-badge" style="background: #dbeafe; color: #0c4a6e;">Backend</div>
+                    <div class="meta-badge" style="background: #fef3c7; color: #78350f;">POST /api/v1/auth/register</div>
+                    <div class="meta-badge" style="background: #fee2e2; color: #7c2d12;"><span class="priority-critical">Critical</span></div>
+                    <div class="meta-badge" style="background: #f3e8ff; color: #6b21a8;">5 pts</div>
+                </div>
+
+                <div class="story-content">
+                    <h4>Description</h4>
+                    <p>As a backend system, I need to receive and process customer registration requests, validate data, and create user accounts.</p>
+
+                    <h4>Acceptance Criteria</h4>
+                    <div class="acceptance-criteria">
+                        <ul>
+                            <li>Endpoint: POST /api/v1/auth/register</li>
+                            <li>Validate all required fields (email, phone, password)</li>
+                            <li>Check email uniqueness (return 400 if duplicate)</li>
+                            <li>Check phone uniqueness (return 400 if duplicate)</li>
+                            <li>Hash password using bcrypt with salt rounds = 10</li>
+                            <li>Store user record in database with status "PENDING_VERIFICATION"</li>
+                            <li>Generate OTP (6 digits) and store with 15-minute expiry</li>
+                            <li>Return response with user ID and message</li>
+                            <li>Handle exceptions with appropriate HTTP status codes</li>
+                            <li>Log registration attempt with user email</li>
+                        </ul>
+                    </div>
+
+                    <h4>API Specification</h4>
+                    <div class="api-spec">{
+  "method": "POST",
+  "endpoint": "/api/v1/auth/register",
+  "request": {
+    "email": "user@example.com",
+    "phone": "+1234567890",
+    "password": "SecurePass123!",
+    "confirmPassword": "SecurePass123!"
+  },
+  "response": {
+    "success": true,
+    "message": "Registration successful",
+    "userId": "UUID",
+    "verificationEmailSent": true
+  }
+}</div>
+                </div>
+            </div>
+
+            <div class="story-card">
+                <span class="story-id">CUST-INT-001</span>
+                <div class="story-title">Email Verification Integration</div>
+                <div class="story-meta">
+                    <div class="meta-badge" style="background: #dbeafe; color: #0c4a6e;">Integration</div>
+                    <div class="meta-badge" style="background: #fef3c7; color: #78350f;">SendGrid</div>
+                    <div class="meta-badge" style="background: #fee2e2; color: #7c2d12;"><span class="priority-critical">Critical</span></div>
+                    <div class="meta-badge" style="background: #f3e8ff; color: #6b21a8;">3 pts</div>
+                </div>
+
+                <div class="story-content">
+                    <h4>Description</h4>
+                    <p>After user registration, send verification email with OTP link to confirm email address.</p>
+
+                    <h4>Acceptance Criteria</h4>
+                    <div class="acceptance-criteria">
+                        <ul>
+                            <li>Call SendGrid API to send email</li>
+                            <li>Email template includes user name and OTP code</li>
+                            <li>OTP link expires in 15 minutes</li>
+                            <li>Include fallback mechanism if email send fails</li>
+                            <li>Log email send attempt and response</li>
+                            <li>Retry logic: 3 attempts with 5-second delay</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customer Portal Module -->
+        <div class="module-section">
+            <h2 class="module-title">3. Customer Portal Module</h2>
+            
+            <h3 class="subsection-title">3.1 Dashboard Page</h3>
+
+            <div class="story-card">
+                <span class="story-id">DASH-FE-001</span>
+                <div class="story-title">Customer Dashboard UI</div>
+                <div class="story-meta">
+                    <div class="meta-badge">Frontend</div>
+                    <div class="meta-badge" style="background: #dbeafe; color: #0c4a6e;">Dashboard</div>
+                    <div class="meta-badge" style="background: #fee2e2; color: #7c2d12;"><span class="priority-critical">Critical</span></div>
+                    <div class="meta-badge" style="background: #f3e8ff; color: #6b21a8;">8 pts</div>
+                </div>
+
+                <div class="story-content">
+                    <h4>Description</h4>
+                    <p>As a logged-in customer, I want to see my dashboard with an overview of my loan applications.</p>
+
+                    <h4>Acceptance Criteria</h4>
+                    <div class="acceptance-criteria">
+                        <ul>
+                            <li>Display welcome message with user name</li>
+                            <li>Show statistics cards: Total Applications, Approved, Pending, Rejected</li>
+                            <li>Display list of all applications in table format</li>
+                            <li>Show columns: Application ID, Type, Amount, Status, Date, Action</li>
+                            <li>Implement sorting by Date, Status, Amount</li>
+                            <li>Implement filtering by Status and Loan Type</li>
+                            <li>Add pagination (10 records per page)</li>
+                            <li>Show "Apply for New Loan" button</li>
+                            <li>Highlight recent applications (last 24 hours)</li>
+                            <li>Add quick action buttons: View Details, Download PDF</li>
+                        </ul>
+                    </div>
+
+                    <h4>Component Structure</h4>
+                    <div class="component-structure">CustomerDashboard
+├── WelcomeSection
+├── StatisticsCards
+│   ├── TotalApplications
+│   ├── ApprovedApplications
+│   ├── PendingApplications
+│   └── RejectedApplications
+├── ApplicationsTable
+│   ├── Filters
+│   ├── Sorting
+│   ├── Pagination
+│   └── ActionButtons
+└── ApplyNewLoanButton</div>
+                </div>
+            </div>
+
+            <div class="story-card">
+                <span class="story-id">DASH-BE-001</span>
+                <div class="story-title">Get Customer Applications Endpoint</div>
+                <div class="story-meta">
+                    <div class="meta-badge" style="background: #dbeafe; color: #0c4a6e;">Backend</div>
+                    <div class="meta-badge" style="background: #fef3c7; color: #78350f;">GET /api/v1/applications</div>
+                    <div class="meta-badge" style="background: #fee2e2; color: #7c2d12;"><span class="priority-critical">Critical</span></div>
+                    <div class="meta-badge" style="background: #f3e8ff; color: #6b21a8;">5 pts</div>
+                </div>
+
+                <div class="story-content">
+                    <h4>Description</h4>
+                    <p>Retrieve all loan applications for authenticated customer with filtering and sorting.</p>
+
+                    <h4>Acceptance Criteria</h4>
+                    <div class="acceptance-criteria">
+                        <ul>
+                            <li>Endpoint: GET /api/v1/applications</li>
+                            <li>Authenticate using JWT token</li>
+                            <li>Support filtering: status, loanType, dateRange</li>
+                            <li>Support sorting: date, status, amount</li>
+                            <li>Support pagination: page, limit (max 100)</li>
+                            <li>Return only authenticated user's applications</li>
+                            <li>Include application status, amount, dates</li>
+                            <li>Include document submission status</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loan Application Module -->
+        <div class="module-section">
+            <h2 class="module-title">4. Loan Application Module</h2>
+            
+            <h3 class="subsection-title">4.1 Loan Application Creation</h3>
+
+            <div class="story-card">
+                <span class="story-id">LOAN-FE-001</span>
+                <div class="story-title">Loan Type Selection</div>
+                <div class="story-meta">
+                    <div class="meta-badge">Frontend</div>
+                    <div class="meta-badge" style="background: #dbeafe; color: #0c4a6e;">Loan Type</div>
+                    <div class="meta-badge" style="background: #fee2e2; color: #7c2d12;"><span class="priority-critical">Critical</span></div>
+                    <div class="meta-badge" style="background: #f3e8ff; color: #6b21a8;">3 pts</div>
+                </div>
+
+                <div class="story-content">
+                    <h4>Description</h4>
+                    <p>As a customer wanting to apply for a loan, I want to select the type of loan I need.</p>
+
+                    <h4>Acceptance Criteria</h4>
+                    <div class="acceptance-criteria">
+                        <ul>
+                            <li>Display 3 loan type cards: Personal, Home, Auto</li>
+                            <li>Show loan type descriptions and benefits</li>
+                            <li>Show indicative interest rates for each type</li>
+                            <li>Show quick loan features for each type</li>
+                            <li>Clicking card redirects to application form</li>
+                            <li>Show loan calculator link on each card</li>
+                            <li>Responsive card layout for mobile</li>
+                        </ul>
+                    </div>
+
+                    <h4>Loan Type Details</h4>
+                    <table>
+                        <tr>
+                            <th>Loan Type</th>
+                            <th>Amount Range</th>
+                            <th>Tenure</th>
+                            <th>Interest Rate</th>
+                        </tr>
+                        <tr>
+                            <td>Personal Loan</td>
+                            <td>10,000 - 500,000</td>
+                            <td>12-60 months</td>
+                            <td>10-15%</td>
+                        </tr>
+                        <tr>
+                            <td>Home Loan</td>
+                            <td>500,000 - 10,000,000</td>
+                            <td>60-240 months</td>
+                            <td>6-10%</td>
+                        </tr>
+                        <tr>
+                            <td>Auto Loan</td>
+                            <td>100,000 - 2,000,000</td>
+                            <td>24-84 months</td>
+                            <td>7-12%</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="story-card">
+                <span class="story-id">LOAN-FE-002</span>
+                <div class="story-title">Multi-Step Application Form UI</div>
+                <div class="story-meta">
+                    <div class="meta-badge">Frontend</div>
+                    <div class="meta-badge" style="background: #dbeafe; color: #0c4a6e;">Application</div>
+                    <div class="meta-badge" style="background: #fee2e2; color: #7c2d12;"><span class="priority-critical">Critical</span></div>
+                    <div class="meta-badge" style="background: #f3e8ff; color: #6b21a8;">10 pts</div>
+                </div>
+
+                <div class="story-content">
+                    <h4>Description</h4>
+                    <p>As a customer applying for a loan, I want to fill out a multi-step form with validation and progress tracking.</p>
+
+                    <h4>Acceptance Criteria</h4>
+                    <div class="acceptance-criteria">
+                        <ul>
+                            <li>Display progress indicator showing current step (1/4, 2/4, etc.)</li>
+                            <li>Show step titles: Personal Info, Employment, Financial, Loan Details</li>
+                            <li>Implement form validation on each step</li>
+                            <li>Show "Previous" and "Next" buttons</li>
+                            <li>Disable "Previous" button on step 1</li>
+                            <li>Disable "Next" button until current step is valid</li>
+                            <li>Show "Save as Draft" button</li>
+                            <li>Show confirmation page before final submission</li>
+                            <li>Display "Finish" button on final step</li>
+                            <li>Store form data in local state</li>
+                        </ul>
+                    </div>
+
+                    <h4>Form Steps Details</h4>
+                    <p><strong>Step 1: Personal Information</strong></p>
+                    <p>Fields: First Name, Last Name, Email, Phone, DOB, Gender, Marital Status</p>
+
+                    <p><strong>Step 2: Employment Information</strong></p>
+                    <p>Fields: Company Name, Designation, Employment Type, Annual Income, Years in Job</p>
+
+                    <p><strong>Step 3: Financial Information</strong></p>
+                    <p>Fields: Existing Loans, Monthly Expenses, Monthly Income, Other Sources</p>
+
+                    <p><strong>Step 4: Loan Details</strong></p>
+                    <p>Fields: Loan Amount, Tenure (months), Purpose</p>
+                </div>
+            </div>
+
+            <div class="story-card">
+                <span class="story-id">LOAN-BE-001</span>
+                <div class="story-title">Create Loan Application Endpoint</div>
+                <div class="story-meta">
+                    <div class="meta-badge" style="background: #dbeafe; color: #0c4a6e;">Backend</div>
+                    <div class="meta-badge" style="background: #fef3c7; color: #78350f;">POST /api/v1/applications</div>
+                    <div class="meta-badge" style="background: #fee2e2; color: #7c2d12;"><span class="priority-critical">Critical</span></div>
+                    <div class="meta-badge" style="background: #f3e8ff; color: #6b21a8;">6 pts</div>
+                </div>
+
+                <div class="story-content">
+                    <h4>Description</h4>
+                    <p>Create new loan application with customer data and store in database.</p>
+
+                    <h4>Acceptance Criteria</h4>
+                    <div class="acceptance-criteria">
+                        <ul>
+                            <li>Endpoint: POST /api/v1/applications</li>
+                            <li>Authenticate using JWT token</li>
+                            <li>Validate all required fields</li>
+                            <li>Generate unique application ID (format: APP-XXXXXX)</li>
+                            <li>Set initial status: SUBMITTED</li>
+                            <li>Store customer information</li>
+                            <li>Validate loan amount within type limits</li>
+                            <li>Calculate initial EMI</li>
+                            <li>Send confirmation email with Application ID</li>
+                            <li>Return application ID in response</li>
+                        </ul>
+                    </div>
+
+                    <h4>Database Schema</h4>
+                    <div class="db-schema">CREATE TABLE Applications (
+  ApplicationId UUID PRIMARY KEY,
+  UserId UUID NOT NULL,
+  LoanType VARCHAR(50) NOT NULL,
+  LoanAmount DECIMAL(15,2) NOT NULL,
+  Tenure INT NOT NULL,
+  Purpose VARCHAR(255) NOT NULL,
+  Status VARCHAR(50) NOT NULL,
+  CreatedAt TIMESTAMP DEFAULT NOW(),
+  SubmittedAt TIMESTAMP NULL,
+  ApprovedAt TIMESTAMP NULL,
+  CalculatedEMI DECIMAL(10,2) NOT NULL
+);</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Document Management Module -->
+        <div class="module-section">
+            <h2 class="module-title">5. Document Management Module</h2>
+            
+            <h3 class="subsection-title">5.1 Document Upload</h3>
+
+            <div class="story-card">
+                <span class="story-id">DOC-FE-001</span>
+                <div class="story-title">Document Upload UI</div>
+                <div class="story-meta">
+                    <div class="meta-badge">Frontend</div>
+                    <div class="meta-badge" style="background: #dbeafe; color: #0c4a6e;">Upload</div>
+                    <div class="meta-badge" style="background: #fee2e2; color: #7c2d12;"><span class="priority-critical">Critical</span></div>
+                    <div class="meta-badge" style="background: #f3e8ff; color: #6b21a8;">7 pts</div>
+                </div>
+
+                <div class="story-content">
+                    <h4>Description</h4>
+                    <p>As a customer with submitted application, I want to upload required documents.</p>
+
+                    <h4>Acceptance Criteria</h4>
+                    <div class="acceptance-criteria">
+                        <ul>
+                            <li>Display list of required documents based on loan type</li>
+                            <li>Show upload status for each document (Not Uploaded, Uploaded, Verified)</li>
+                            <li>Implement drag-and-drop upload for each document</li>
+                            <li>Show file input with browse button</li>
+                            <li>Show file size limit (5MB) and allowed formats (PDF, JPG, PNG)</li>
+                            <li>Validate file before upload (size, format, virus scan)</li>
+                            <li>Show progress bar during upload</li>
+                            <li>Display uploaded file preview option</li>
+                            <li>Allow file replacement</li>
+                            <li>Show success message after upload</li>
+                            <li>Disable further actions until all required documents uploaded</li>
+                        </ul>
+                    </div>
+
+                    <h4>Required Documents by Loan Type</h4>
+                    <ul>
+                        <li><strong>Personal Loan:</strong> ID Proof, Income Proof (Salary Slip), Bank Statement</li>
+                        <li><strong>Home Loan:</strong> ID Proof, Income Proof, Bank Statement, Property Documents, Affidavit</li>
+                        <li><strong>Auto Loan:</strong> ID Proof, Income Proof, Bank Statement, Auto Insurance Quote</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="story-card">
+                <span class="story-id">DOC-BE-001</span>
+                <div class="story-title">Upload Document Endpoint</div>
+                <div class="story-meta">
+                    <div class="meta-badge" style="background: #dbeafe; color: #0c4a6e;">Backend</div>
+                    <div class="meta-badge" style="background: #fef3c7; color: #78350f;">POST /api/v1/documents</div>
+                    <div class="meta-badge" style="background: #fee2e2; color: #7c2d12;"><span class="priority-critical">Critical</span></div>
+                    <div class="meta-badge" style="background: #f3e8ff; color: #6b21a8;">7 pts</div>
+                </div>
+
+                <div class="story-content">
+                    <h4>Description</h4>
+                    <p>Receive document upload, validate, encrypt, and store in secure storage.</p>
+
+                    <h4>Acceptance Criteria</h4>
+                    <div class="acceptance-criteria">
+                        <ul>
+                            <li>Endpoint: POST /api/v1/applications/{applicationId}/documents</li>
+                            <li>Authenticate using JWT token</li>
+                            <li>Validate file format (PDF, JPG, PNG only)</li>
+                            <li>Validate file size (max 5MB)</li>
+                            <li>Scan for viruses using antivirus API</li>
+                            <li>Encrypt file using AES-256</li>
+                            <li>Generate unique file name with timestamp</li>
+                            <li>Store in Azure Blob Storage with access control</li>
+                            <li>Store metadata in database</li>
+                            <li>Return document ID and upload confirmation</li>
+                            <li>Log upload with user ID and filename</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Application Tracking Module -->
+        <div class="module-section">
+            <h2 class="module-title">6. Application Tracking Module</h2>
+            
+            <h3 class="subsection-title">6.1 Application Status Tracking</h3>
+
+            <div class="story-card">
+                <span class="story-id">TRACK-FE-001</span>
+                <div class="story-title">Application Status Timeline</div>
+                <div class="story-meta">
+                    <div class="meta-badge">Frontend</div>
+                    <div class="meta-badge" style="background: #dbeafe; color: #0c4a6e;">Timeline</div>
+                    <div class="meta-badge" style="background: #fee2e2; color: #7c2d12;"><span class="priority-critical">Critical</span></div>
+                    <div class="meta-badge" style="background: #f3e8ff; color: #6b21a8;">6 pts</div>
+                </div>
+
+                <div class="story-content">
+                    <h4>Description</h4>
+                    <p>As a customer, I want to see the complete status timeline of my application.</p>
+
+                    <h4>Acceptance Criteria</h4>
+                    <div class="acceptance-criteria">
+                        <ul>
+                            <li>Display vertical timeline showing all status changes</li>
+                            <li>Show status steps: Submitted → Under Review → Approved/Rejected</li>
+                            <li>Highlight current status</li>
+                            <li>Show date and time for each status change</li>
+                            <li>Show comments from loan officer for each step</li>
+                            <li>Show expected timeline (e.g., "Review: 3-5 days")</li>
+                            <li>Show next expected action</li>
+                            <li>Color-code statuses (green=approved, red=rejected, blue=pending)</li>
+                        </ul>
+                    </div>
+
+                    <h4>Status Workflow</h4>
+                    <div class="api-spec">1. SUBMITTED (Customer submits) → Awaiting Documents
+2. DOCUMENTS_SUBMITTED → Under Document Review (1-2 days)
+3. DOCUMENTS_VERIFIED → Credit Check In Progress (2-3 days)
+4. UNDER_REVIEW → Final Review (1-2 days)
+5. APPROVED → Offer Sent
+   OR
+   REJECTED → Rejection Reason Provided</div>
+                </div>
+            </div>
+
+            <div class="story-card">
+                <span class="story-id">TRACK-BE-001</span>
+                <div class="story-title">Get Application Timeline</div>
+                <div class="story-meta">
+                    <div class="meta-badge" style="background: #dbeafe; color: #0c4a6e;">Backend</div>
+                    <div class="meta-badge" style="background: #fef3c7; color: #78350f;">GET /api/v1/timeline</div>
+                    <div class="meta-badge" style="background: #fee2e2; color: #7c2d12;"><span class="priority-critical">Critical</span></div>
+                    <div class="meta-badge" style="background: #f3e8ff; color: #6b21a8;">4 pts</div>
+                </div>
+
+                <div class="story-content">
+                    <h4>Description</h4>
+                    <p>Retrieve complete status history and timeline for application.</p>
+
+                    <h4>Acceptance Criteria</h4>
+                    <div class="acceptance-criteria">
+                        <ul>
+                            <li>Endpoint: GET /api/v1/applications/{applicationId}/timeline</li>
+                            <li>Return all status changes chronologically</li>
+                            <li>Include timestamps and comments</li>
+                            <li>Include acting user (who made change)</li>
+                            <li>Return current status and next steps</li>
+                            <li>Include document verification status</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loan Calculator Module -->
+        <div class="module-section">
+            <h2 class="module-title">7. Loan Calculator Module</h2>
+            
+            <h3 class="subsection-title">7.1 EMI Calculator (Public)</h3>
+
+            <div class="story-card">
+                <span class="story-id">CALC-FE-001</span>
+                <div class="story-title">Public Loan Calculator</div>
+                <div class="story-meta">
+                    <div class="meta-badge">Frontend</div>
+                    <div class="meta-badge" style="background: #dbeafe; color: #0c4a6e;">Calculator</div>
+                    <div class="meta-badge" style="background: #fcd34d; color: #78350f;">High</div>
+                    <div class="meta-badge" style="background: #f3e8ff; color: #6b21a8;">6 pts</div>
+                </div>
+
+                <div class="story-content">
+                    <h4>Description</h4>
+                    <p>As a prospective customer, I want to calculate EMI for different loan amounts and tenures.</p>
+
+                    <h4>Acceptance Criteria</h4>
+                    <div class="acceptance-criteria">
+                        <ul>
+                            <li>Accessible without login</li>
+                            <li>Input fields: Loan Type, Amount, Tenure, Interest Rate</li>
+                            <li>Show real-time calculation as user adjusts values</li>
+                            <li>Display: Monthly EMI, Total Interest, Total Amount Payable</li>
+                            <li>Show amortization schedule (first 3 months)</li>
+                            <li>Option to download full amortization schedule as PDF</li>
+                            <li>Show slider for quick tenure adjustment</li>
+                            <li>Preset interest rates for each loan type</li>
+                            <li>Comparison mode for multiple loan scenarios</li>
+                            <li>Responsive design</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="story-card">
+                <span class="story-id">CALC-BE-001</span>
+                <div class="story-title">Calculate EMI with Amortization</div>
+                <div class="story-meta">
+                    <div class="meta-badge" style="background: #dbeafe; color: #0c4a6e;">Backend</div>
+                    <div class="meta-badge" style="background: #fef3c7; color: #78350f;">POST /api/v1/calculator/emi</div>
+                    <div class="meta-badge" style="background: #fcd34d; color: #78350f;">High</div>
+                    <div class="meta-badge" style="background: #f3e8ff; color: #6b21a8;">4 pts</div>
+                </div>
+
+                <div class="story-content">
+                    <h4>Description</h4>
+                    <p>Calculate EMI and create complete amortization schedule.</p>
+
+                    <h4>Acceptance Criteria</h4>
+                    <div class="acceptance-criteria">
+                        <ul>
+                            <li>Endpoint: POST /api/v1/calculator/emi</li>
+                            <li>Input: principal, rate, tenure</li>
+                            <li>Calculate monthly EMI</li>
+                            <li>Generate month-by-month amortization</li>
+                            <li>Calculate total interest and total payable</li>
+                            <li>No authentication required</li>
+                            <li>Cache results for 1 hour</li>
+                        </ul>
+                    </div>
+
+                    <h4>EMI Formula</h4>
+                    <div class="api-spec">Monthly Rate = Annual Rate / 12 / 100
+Number of Payments = Tenure
+
+EMI = Principal × (Monthly Rate × (1 + Monthly Rate)^n) / ((1 + Monthly Rate)^n - 1)
+
+For each month:
+  Interest = Remaining Principal × Monthly Rate
+  Principal = EMI - Interest
+  Remaining = Remaining - Principal</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Panel Module -->
+        <div class="module-section">
+            <h2 class="module-title">8. Admin Panel Module</h2>
+            
+            <h3 class="subsection-title">8.1 Admin Dashboard</h3>
+
+            <div class="story-card">
+                <span class="story-id">ADMIN-FE-001</span>
+                <div class="story-title">Admin Dashboard</div>
+                <div class="story-meta">
+                    <div class="meta-badge">Frontend</div>
+                    <div class="meta-badge" style="background: #dbeafe; color: #0c4a6e;">Dashboard</div>
+                    <div class="meta-badge" style="background: #fcd34d; color: #78350f;">High</div>
+                    <div class="meta-badge" style="background: #f3e8ff; color: #6b21a8;">7 pts</div>
+                </div>
+
+                <div class="story-content">
+                    <h4>Description</h4>
+                    <p>As an admin, I want to see dashboard with key metrics and application management.</p>
+
+                    <h4>Acceptance Criteria</h4>
+                    <div class="acceptance-criteria">
+                        <ul>
+                            <li>Display key metrics cards: Total Applications, Pending Review, Approved, Rejected</li>
+                            <li>Show approval rate percentage</li>
+                            <li>Show average processing time</li>
+                            <li>Display applications requiring action</li>
+                            <li>Show chart: Applications by Loan Type (pie chart)</li>
+                            <li>Show chart: Applications over time (line chart)</li>
+                            <li>Show recent applications table</li>
+                            <li>Add filters by date range and loan type</li>
+                            <li>Add search functionality</li>
+                        </ul>
+                    </div>
+
+                    <h4>Key Metrics</h4>
+                    <ul>
+                        <li>Total Applications (Today, This Month, All Time)</li>
+                        <li>Pending Reviews (count)</li>
+                        <li>Approved Today (count)</li>
+                        <li>Rejected Today (count)</li>
+                        <li>Average Processing Time (hours)</li>
+                        <li>Approval Rate (%)</li>
+                        <li>Document Pending (count)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">8.2 Application Review</h3>
+
+            <div class="story-card">
+                <span class="story-id">ADMIN-FE-002</span>
+                <div class="story-title">Application Review Interface</div>
+                <div class="story-meta">
+                    <div class="meta-badge">Frontend</div>
+                    <div class="meta-badge" style="background: #dbeafe; color: #0c4a6e;">Review</div>
+                    <div class="meta-badge" style="background: #fee2e2; color: #7c2d12;"><span class="priority-critical">Critical</span></div>
+                    <div class="meta-badge" style="background: #f3e8ff; color: #6b21a8;">8 pts</div>
+                </div>
+
+                <div class="story-content">
+                    <h4>Description</h4>
+                    <p>As a loan officer, I want to review application details and make decisions.</p>
+
+                    <h4>Acceptance Criteria</h4>
+                    <div class="acceptance-criteria">
+                        <ul>
+                            <li>Display all application information</li>
+                            <li>Show customer personal details</li>
+                            <li>Show employment and financial details</li>
+                            <li>Show uploaded documents with preview</li>
+                            <li>Show document verification status</li>
+                            <li>Add action buttons: Approve, Reject, Request Documents</li>
+                            <li>Show comments section for internal notes</li>
+                            <li>Display previous status history</li>
+                            <li>Show EMI calculation details</li>
+                            <li>Implement keyboard shortcuts for actions</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="story-card">
+                <span class="story-id">ADMIN-BE-002</span>
+                <div class="story-title">Update Application Status</div>
+                <div class="story-meta">
+                    <div class="meta-badge" style="background: #dbeafe; color: #0c4a6e;">Backend</div>
+                    <div class="meta-badge" style="background: #fef3c7; color: #78350f;">PUT /api/v1/applications</div>
+                    <div class="meta-badge" style="background: #fee2e2; color: #7c2d12;"><span class="priority-critical">Critical</span></div>
+                    <div class="meta-badge" style="background: #f3e8ff; color: #6b21a8;">5 pts</div>
+                </div>
+
+                <div class="story-content">
+                    <h4>Description</h4>
+                    <p>Update application status with admin action.</p>
+
+                    <h4>Acceptance Criteria</h4>
+                    <div class="acceptance-criteria">
+                        <ul>
+                            <li>Endpoint: PUT /api/v1/applications/{applicationId}/status</li>
+                            <li>Authenticate as admin/loan officer</li>
+                            <li>Allow status updates: APPROVED, REJECTED, REQUEST_DOCUMENTS</li>
+                            <li>Require rejection reason for rejection</li>
+                            <li>Generate approval offer if approved</li>
+                            <li>Send notification to customer</li>
+                            <li>Log action with admin ID</li>
+                            <li>Store action comments</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Integration Stories -->
+        <div class="module-section">
+            <h2 class="module-title">9. Integration Stories</h2>
+
+            <div class="story-card">
+                <span class="story-id">INT-EMAIL-001</span>
+                <div class="story-title">Email Service Integration</div>
+                <div class="story-meta">
+                    <div class="meta-badge" style="background: #dbeafe; color: #0c4a6e;">Integration</div>
+                    <div class="meta-badge" style="background: #fef3c7; color: #78350f;">SendGrid</div>
+                    <div class="meta-badge" style="background: #fee2e2; color: #7c2d12;"><span class="priority-critical">Critical</span></div>
+                    <div class="meta-badge" style="background: #f3e8ff; color: #6b21a8;">4 pts</div>
+                </div>
+
+                <div class="story-content">
+                    <h4>Description</h4>
+                    <p>Integrate SendGrid email service for sending emails.</p>
+
+                    <h4>Acceptance Criteria</h4>
+                    <div class="acceptance-criteria">
+                        <ul>
+                            <li>Use SendGrid API v3</li>
+                            <li>Support multiple email templates</li>
+                            <li>Implement retry logic (3 attempts)</li>
+                            <li>Log all email sends</li>
+                            <li>Track email delivery status</li>
+                            <li>Handle send failures gracefully</li>
+                            <li>Support dynamic template variables</li>
+                        </ul>
+                    </div>
+
+                    <h4>Email Templates</h4>
+                    <ol>
+                        <li>Welcome Email (Registration)</li>
+                        <li>Email Verification OTP</li>
+                        <li>Password Reset Link</li>
+                        <li>Application Confirmation</li>
+                        <li>Document Upload Request</li>
+                        <li>Status Change Notification</li>
+                        <li>Approval Offer</li>
+                        <li>Rejection Notice</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Integration Points -->
+        <div class="module-section">
+            <h2 class="module-title">10. System Integration Points</h2>
+
+            <h3 class="subsection-title">10.1 Architecture Integration Flow</h3>
+            <div class="component-structure">Frontend (React)
+    ↓
+API Gateway (Azure)
+    ↓
+Authentication Service (OAuth 2.0/JWT)
+    ↓
+Application Services
+├── Customer Service
+├── Application Service
+├── Document Service
+├── Notification Service
+└── Reporting Service
+    ↓
+Data Layer
+├── SQL Server Database
+├── Azure Blob Storage (Documents)
+└── Redis Cache
+    ↓
+External Services
+├── SendGrid (Email)
+├── Azure Key Vault (Secrets)
+└── Application Insights (Logging)</div>
+
+            <h3 class="subsection-title">10.2 API Gateway Specifications</h3>
+            <p><strong>Base URL:</strong> https://api.smartloan.com/api/v1</p>
+            <p><strong>Authentication:</strong> JWT Token in Authorization header: Authorization: Bearer {token}</p>
+            <p><strong>Rate Limiting:</strong> 100 requests per minute per user</p>
+            <p><strong>Pagination:</strong> Default limit: 10, Max limit: 100</p>
+
+            <h3 class="subsection-title">10.3 Response Format</h3>
+            <div class="api-spec">Success (2xx):
+{
+  "success": true,
+  "message": "Operation successful",
+  "data": {},
+  "timestamp": "2026-05-21T10:30:00Z"
+}
+
+Error (4xx/5xx):
+{
+  "success": false,
+  "error": "Error message",
+  "code": "ERROR_CODE",
+  "timestamp": "2026-05-21T10:30:00Z"
+}</div>
+        </div>
+
+        <!-- Approval Section -->
+        <div class="module-section">
+            <h2 class="module-title">Approval & Sign-Off</h2>
+            <table>
+                <tr>
+                    <th>Role</th>
+                    <th>Name</th>
+                    <th>Date</th>
+                    <th>Signature</th>
+                </tr>
+                <tr>
+                    <td>Project Manager</td>
+                    <td>Deepa</td>
+                    <td>_________</td>
+                    <td>_________</td>
+                </tr>
+                <tr>
+                    <td>Tech Lead</td>
+                    <td>_________</td>
+                    <td>_________</td>
+                    <td>_________</td>
+                </tr>
+                <tr>
+                    <td>Business Analyst</td>
+                    <td>_________</td>
+                    <td>_________</td>
+                    <td>_________</td>
+                </tr>
+                <tr>
+                    <td>QA Lead</td>
+                    <td>_________</td>
+                    <td>_________</td>
+                    <td>_________</td>
+                </tr>
+            </table>
+
+            <div class="footer">
+                <p><strong>SmartLoan Platform - Refined User Stories Document</strong></p>
+                <p>Version 2.0 | May 21, 2026 | Status: Final</p>
+                <p>90+ User Stories | Module & Page-wise | Frontend, Backend & Integration</p>
+                <p>&copy; 2026 Tavant Technologies. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
