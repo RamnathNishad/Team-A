@@ -6,6 +6,7 @@ interface AuthState {
   token: string | null;
   isLoading: boolean;
   error: string | null;
+  registrationEmail: string | null;
 }
 
 const initialState: AuthState = {
@@ -14,14 +15,55 @@ const initialState: AuthState = {
   token: null,
   isLoading: false,
   error: null,
+  registrationEmail: null,
 };
 
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    // Common actions
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
+    },
+    clearError: (state) => {
+      state.error = null;
+    },
+
+    // Registration actions
+    registerStart: (state) => {
+      state.isLoading = true;
+      state.error = null;
+    },
+    registerSuccess: (state, action: PayloadAction<string>) => {
+      state.isLoading = false;
+      state.error = null;
+      state.registrationEmail = action.payload;
+    },
+    registerFailure: (state, action: PayloadAction<string>) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+
+    // OTP verification actions
+    verifyOtpStart: (state) => {
+      state.isLoading = true;
+      state.error = null;
+    },
+    verifyOtpSuccess: (state) => {
+      state.isLoading = false;
+      state.error = null;
+      state.registrationEmail = null;
+    },
+    verifyOtpFailure: (state, action: PayloadAction<string>) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+
+    // Login actions
+    loginStart: (state) => {
+      state.isLoading = true;
+      state.error = null;
     },
     loginSuccess: (
       state,
@@ -37,17 +79,56 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+
+    // Password reset actions
+    passwordResetStart: (state) => {
+      state.isLoading = true;
+      state.error = null;
+    },
+    passwordResetSuccess: (state) => {
+      state.isLoading = false;
+      state.error = null;
+    },
+    passwordResetFailure: (state, action: PayloadAction<string>) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+
+    // Logout
     logout: (state) => {
       state.isAuthenticated = false;
       state.user = null;
       state.token = null;
       state.error = null;
+      state.registrationEmail = null;
     },
-    clearError: (state) => {
-      state.error = null;
+
+    // Restore auth state
+    restoreAuth: (state, action: PayloadAction<{ user: { id: string; email: string; name: string }; token: string }>) => {
+      state.isAuthenticated = true;
+      state.user = action.payload.user;
+      state.token = action.payload.token;
     },
   },
 });
 
-export const { setLoading, loginSuccess, loginFailure, logout, clearError } = authSlice.actions;
+export const {
+  setLoading,
+  clearError,
+  registerStart,
+  registerSuccess,
+  registerFailure,
+  verifyOtpStart,
+  verifyOtpSuccess,
+  verifyOtpFailure,
+  loginStart,
+  loginSuccess,
+  loginFailure,
+  passwordResetStart,
+  passwordResetSuccess,
+  passwordResetFailure,
+  logout,
+  restoreAuth,
+} = authSlice.actions;
+
 export default authSlice.reducer;
