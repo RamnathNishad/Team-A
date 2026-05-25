@@ -74,6 +74,11 @@ export const authSlice = createSlice({
       state.token = action.payload.token;
       state.isLoading = false;
       state.error = null;
+      // Persist to localStorage for recovery on page refresh
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('auth_token', action.payload.token);
+        localStorage.setItem('user', JSON.stringify(action.payload.user));
+      }
     },
     loginFailure: (state, action: PayloadAction<string>) => {
       state.isLoading = false;
@@ -101,6 +106,11 @@ export const authSlice = createSlice({
       state.token = null;
       state.error = null;
       state.registrationEmail = null;
+      // Clear localStorage on logout
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('user');
+      }
     },
 
     // Restore auth state
@@ -110,12 +120,23 @@ export const authSlice = createSlice({
       state.token = action.payload.token;
     },
 
+    // Set auth restored flag to indicate restoration is complete
+    setAuthRestored: (state, action: PayloadAction<boolean>) => {
+      // This action is used to signal that auth restoration is complete
+      // Can be used to resolve the loading state
+    },
+
     // Direct auth state setters
     setAuth: (state, action: PayloadAction<{ user: { id: string; email: string; name: string }; token: string; isAuthenticated: boolean }>) => {
       state.isAuthenticated = action.payload.isAuthenticated;
       state.user = action.payload.user;
       state.token = action.payload.token;
       state.error = null;
+      // Persist to localStorage for recovery on page refresh
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('auth_token', action.payload.token);
+        localStorage.setItem('user', JSON.stringify(action.payload.user));
+      }
     },
 
     setAuthLoading: (state, action: PayloadAction<boolean>) => {

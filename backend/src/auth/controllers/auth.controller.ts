@@ -26,7 +26,7 @@ import {
 import { AuthResponseDto, OtpResponseDto, VerificationResponseDto, MessageResponseDto } from '../dto/auth-response.dto';
 
 @ApiTags('Auth')
-@Controller('api/v1/auth')
+@Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 

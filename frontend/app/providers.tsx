@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { Provider, useDispatch } from 'react-redux';
 import { store } from '@/store';
 import { restoreAuth } from '@/store/slices/authSlice';
@@ -12,13 +12,22 @@ interface ProvidersProps {
 
 function AuthRestorer({ children }: { children: ReactNode }) {
   const dispatch = useDispatch();
+  const [isRestored, setIsRestored] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    // Restore auth state from cookie on app mount
-    const token = Cookie.get('auth_token');
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+
+    // Restore auth state from cookie/localStorage on app mount
+    const token = Cookie.get('auth_token') || localStorage.getItem('auth_token');
+    
     if (token) {
       try {
-        // Try to fetch user data from local storage or API
+        // Try to fetch user data from local storage
         const userStr = localStorage.getItem('user');
         if (userStr) {
           const user = JSON.parse(userStr);
@@ -28,7 +37,24 @@ function AuthRestorer({ children }: { children: ReactNode }) {
         console.error('Error restoring auth state:', error);
       }
     }
-  }, [dispatch]);
+    
+    // Mark restoration as complete after a short delay to ensure state is updated
+    setTimeout(() => {
+      setIsRestored(true);
+    }, 100);
+  }, [dispatch, isMounted]);
+
+  // If not mounted yet or auth restoration is in progress, show loading screen
+  if (!isMounted || !isRestored) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-4xl mb-4">⏳</div>
+          <p className="text-gray-600">Initializing...</p>
+        </div>
+      </div>
+    );
+  }
 
   return <>{children}</>;
 }
