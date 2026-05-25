@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { authService } from '@/services/authService';
 
 // Validation schema
 const registerSchema = z.object({
@@ -43,30 +44,38 @@ export default function RegisterPage() {
     setServerError(null);
 
     try {
-      const response = await fetch('/api/v1/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      // Call register API - sends OTP to email
+      const response = await authService.register({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        password: data.password,
+        confirmPassword: data.confirmPassword,
+      });
+
+      if (response?.email) {
+        // Store registration data for OTP verification
+        sessionStorage.setItem('registrationEmail', data.email);
+        sessionStorage.setItem('registrationData', JSON.stringify({
           firstName: data.firstName,
           lastName: data.lastName,
           email: data.email,
           password: data.password,
-        }),
-      });
+          confirmPassword: data.confirmPassword,
+        }));
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Registration failed');
+        // Redirect to OTP verification page
+        router.push('/auth/verify-otp');
+      } else {
+        setServerError(response?.message || 'Registration failed. Please try again.');
       }
-
-      // Successful registration
-      reset();
-      // Redirect to login or dashboard
-      router.push('/auth/login?registered=true');
-    } catch (error) {
-      setServerError(error instanceof Error ? error.message : 'An error occurred during registration');
+    } catch (error: any) {
+      const errorMessage =
+        error?.message ||
+        error?.error?.message ||
+        'Registration failed. Please try again.';
+      setServerError(errorMessage);
+      console.error('Registration error:', error);
     } finally {
       setIsLoading(false);
     }

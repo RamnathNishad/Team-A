@@ -109,6 +109,26 @@ export const authSlice = createSlice({
       state.user = action.payload.user;
       state.token = action.payload.token;
     },
+
+    // Direct auth state setters
+    setAuth: (state, action: PayloadAction<{ user: { id: string; email: string; name: string }; token: string; isAuthenticated: boolean }>) => {
+      state.isAuthenticated = action.payload.isAuthenticated;
+      state.user = action.payload.user;
+      state.token = action.payload.token;
+      state.error = null;
+    },
+
+    setAuthLoading: (state, action: PayloadAction<boolean>) => {
+      state.isLoading = action.payload;
+    },
+
+    setAuthError: (state, action: PayloadAction<string>) => {
+      state.error = action.payload;
+    },
+
+    updateUser: (state, action: PayloadAction<{ id: string; email: string; name: string }>) => {
+      state.user = action.payload;
+    },
   },
 });
 
@@ -129,6 +149,10 @@ export const {
   passwordResetFailure,
   logout,
   restoreAuth,
+  setAuth,
+  setAuthLoading,
+  setAuthError,
+  updateUser,
 } = authSlice.actions;
 
 export default authSlice.reducer;

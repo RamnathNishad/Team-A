@@ -6,28 +6,42 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { authService } from '@/services/authService';
+import { useDispatch } from 'react-redux';
+import { setAuth, setAuthError, setAuthLoading } from '@/store/slices/authSlice';
 
 // Validation Schema
 const verifyOtpSchema = z.object({
-  otp: z.string().length(6, 'OTP must be 6 digits'),
+  otp: z.string()
+    .regex(/^\d{6}$/, 'OTP must be exactly 6 digits')
+    .length(6, 'OTP must be 6 digits'),
 });
 
 type VerifyOtpFormData = z.infer<typeof verifyOtpSchema>;
 
 export default function VerifyOtpPage() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState('');
   const [resendLoading, setResendLoading] = useState(false);
   const [resendTimeout, setResendTimeout] = useState(0);
   const [email, setEmail] = useState<string>('');
+  const [registrationData, setRegistrationData] = useState<any>(null);
 
-  // Get email from query params or previous step
+  // Get email and registration data from session storage
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const emailParam = params.get('email') || sessionStorage.getItem('registerEmail') || '';
+    const emailParam = sessionStorage.getItem('registrationEmail');
+    const regData = sessionStorage.getItem('registrationData');
+
+    if (!emailParam || !regData) {
+      router.push('/auth/register');
+      return;
+    }
+
     setEmail(emailParam);
-  }, []);
+    setRegistrationData(JSON.parse(regData));
+  }, [router]);
 
   const {
     register,
@@ -42,71 +56,90 @@ export default function VerifyOtpPage() {
   const otpValue = watch('otp');
 
   const onSubmit = async (data: VerifyOtpFormData) => {
+    if (!registrationData) {
+      setServerError('Registration data not found. Please register again.');
+      return;
+    }
+
     setIsLoading(true);
     setServerError('');
+    dispatch(setAuthLoading(true));
 
     try {
-      const response = await fetch('/api/v1/auth/verify-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email,
-          otp: data.otp,
-        }),
+      const response = await authService.verifyOtp({
+        email: email,
+        otp: data.otp,
+        firstName: registrationData.firstName,
+        lastName: registrationData.lastName,
+        password: registrationData.password,
+        confirmPassword: registrationData.confirmPassword,
       });
 
-      const result = await response.json();
+      if (response?.user && response?.accessToken) {
+        // Update Redux store
+        dispatch(
+          setAuth({
+            user: response.user,
+            token: response.accessToken,
+            isAuthenticated: true,
+          })
+        );
 
-      if (!response.ok) {
-        setServerError(result.message || 'Failed to verify OTP. Please try again.');
-        return;
+        // Clear session storage
+        sessionStorage.removeItem('registrationEmail');
+        sessionStorage.removeItem('registrationData');
+
+        // Redirect to dashboard
+        router.push('/dashboard');
+      } else {
+        const errorMsg = response?.message || 'Failed to verify OTP. Please try again.';
+        setServerError(errorMsg);
+        dispatch(setAuthError(errorMsg));
       }
-
-      // OTP verified successfully, redirect to login
-      router.push('/auth/login?verified=true');
-    } catch (error) {
-      setServerError('An error occurred. Please try again.');
+    } catch (error: any) {
+      const errorMessage =
+        error?.message ||
+        error?.error?.message ||
+        'Failed to verify OTP. Please try again.';
+      setServerError(errorMessage);
+      dispatch(setAuthError(errorMessage));
       console.error('OTP verification error:', error);
     } finally {
       setIsLoading(false);
+      dispatch(setAuthLoading(false));
     }
   };
 
   const handleResendOtp = async () => {
+    if (!email) return;
+
     setResendLoading(true);
     setServerError('');
 
     try {
-      const response = await fetch('/api/v1/auth/send-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email,
-        }),
-      });
+      const response = await authService.sendOtp(email, 'registration');
 
-      if (!response.ok) {
+      if (response?.email) {
+        // Start countdown timer
+        setResendTimeout(60);
+        const interval = setInterval(() => {
+          setResendTimeout((prev) => {
+            if (prev <= 1) {
+              clearInterval(interval);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+      } else {
         setServerError('Failed to resend OTP. Please try again.');
-        return;
       }
-
-      // Start countdown timer
-      setResendTimeout(60);
-      const interval = setInterval(() => {
-        setResendTimeout((prev) => {
-          if (prev <= 1) {
-            clearInterval(interval);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    } catch (error) {
-      setServerError('An error occurred. Please try again.');
+    } catch (error: any) {
+      const errorMessage =
+        error?.message ||
+        error?.error?.message ||
+        'Failed to resend OTP. Please try again.';
+      setServerError(errorMessage);
       console.error('Resend OTP error:', error);
     } finally {
       setResendLoading(false);

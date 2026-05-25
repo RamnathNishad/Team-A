@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { authService } from '@/services/authService';
 
 // Validation Schema
 const forgotPasswordSchema = z.object({
@@ -37,33 +38,28 @@ export default function ForgotPasswordPage() {
     setSuccessMessage('');
 
     try {
-      // Call password reset API
-      const response = await fetch('/api/v1/auth/forgot-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: data.email,
-        }),
-      });
+      const response = await authService.forgotPassword(data.email);
 
-      const result = await response.json();
+      if (response?.email) {
+        // Store email for reset password page
+        sessionStorage.setItem('resetEmail', data.email);
 
-      if (!response.ok) {
-        setServerError(result.message || 'Failed to send reset link. Please try again.');
-        return;
+        setSuccessMessage(`OTP sent to ${data.email}. Check your email for password reset instructions.`);
+        setEmailSent(true);
+
+        // Redirect to reset password page after 2 seconds
+        setTimeout(() => {
+          router.push('/auth/reset-password');
+        }, 2000);
+      } else {
+        setServerError(response?.message || 'Failed to send reset link. Please try again.');
       }
-
-      setSuccessMessage(`Password reset link sent to ${data.email}`);
-      setEmailSent(true);
-
-      // Redirect after 3 seconds
-      setTimeout(() => {
-        router.push('/auth/login');
-      }, 3000);
-    } catch (error) {
-      setServerError('An error occurred. Please try again.');
+    } catch (error: any) {
+      const errorMessage =
+        error?.message ||
+        error?.error?.message ||
+        'An error occurred. Please try again.';
+      setServerError(errorMessage);
       console.error('Forgot password error:', error);
     } finally {
       setIsLoading(false);

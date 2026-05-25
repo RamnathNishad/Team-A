@@ -30,14 +30,14 @@ export class UserService {
     user.lastName = createUserDto.lastName;
     user.email = createUserDto.email;
     user.password = await this.hashPassword(password);
-    user.phoneNumber = createUserDto.phoneNumber;
-    user.dateOfBirth = createUserDto.dateOfBirth ? new Date(createUserDto.dateOfBirth) : null;
-    user.address = createUserDto.address;
-    user.city = createUserDto.city;
-    user.state = createUserDto.state;
-    user.zipCode = createUserDto.zipCode;
-    user.panNumber = createUserDto.panNumber;
-    user.aadhaarNumber = createUserDto.aadhaarNumber;
+    user.phoneNumber = createUserDto.phoneNumber || '';
+    user.dateOfBirth = createUserDto.dateOfBirth ? new Date(createUserDto.dateOfBirth) : new Date();
+    user.address = createUserDto.address || '';
+    user.city = createUserDto.city || '';
+    user.state = createUserDto.state || '';
+    user.zipCode = createUserDto.zipCode || '';
+    user.panNumber = createUserDto.panNumber || '';
+    user.aadhaarNumber = createUserDto.aadhaarNumber || '';
     user.role = 'user';
 
     return this.userRepository.save(user);

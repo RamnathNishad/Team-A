@@ -13,43 +13,43 @@ import { User } from '@/users/entities/user.entity';
 @Index(['email', 'createdAt'])
 export class Otp {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  email: string;
+  email!: string;
 
   @Column()
-  code: string; // 6-digit OTP
+  code!: string; // 6-digit OTP
 
   @Column({ default: 'registration' })
-  type: string; // registration, password-reset, phone-verification
+  type!: string; // registration, password-reset, phone-verification
 
   @Column({ default: false })
-  isVerified: boolean;
+  isVerified!: boolean;
 
   @Column()
-  expiresAt: Date;
+  expiresAt!: Date;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @Column({ nullable: true })
-  verifiedAt: Date;
+  verifiedAt!: Date;
 
   @Column({ default: 0 })
-  attemptCount: number;
+  attemptCount!: number;
 
   @Column({ default: false })
-  isLocked: boolean;
+  isLocked!: boolean;
 
   // Metadata for tracking
   @Column({ nullable: true })
-  ipAddress: string;
+  ipAddress!: string;
 
   @Column({ nullable: true })
-  userAgent: string;
+  userAgent!: string;
 
   @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn()
-  user: User;
+  user!: User;
 }

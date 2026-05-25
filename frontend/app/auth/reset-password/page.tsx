@@ -1,14 +1,16 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { authService } from '@/services/authService';
 
 // Validation Schema
 const resetPasswordSchema = z.object({
+  otp: z.string().regex(/^\d{6}$/, 'OTP must be exactly 6 digits'),
   password: z.string()
     .min(8, 'Password must be at least 8 characters')
     .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
@@ -25,15 +27,22 @@ type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 
 export default function ResetPasswordPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
 
-  const token = searchParams.get('token') || '';
-  const email = searchParams.get('email') || '';
+  useEffect(() => {
+    // Get email from session storage
+    const email = sessionStorage.getItem('resetEmail');
+    if (!email) {
+      router.push('/auth/forgot-password');
+    } else {
+      setResetEmail(email);
+    }
+  }, [router]);
 
   const {
     register,
@@ -48,65 +57,44 @@ export default function ResetPasswordPage() {
   const password = watch('password');
 
   const onSubmit = async (data: ResetPasswordFormData) => {
+    if (!resetEmail) {
+      setServerError('Email not found. Please start password reset again.');
+      return;
+    }
+
     setIsLoading(true);
     setServerError('');
     setSuccessMessage('');
 
     try {
-      const response = await fetch('/api/v1/auth/reset-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email,
-          token: token,
-          newPassword: data.password,
-        }),
+      const response = await authService.resetPassword({
+        email: resetEmail,
+        token: data.otp,
+        newPassword: data.password,
       });
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        setServerError(result.message || 'Failed to reset password. Please try again.');
-        return;
+      if (response?.user && response?.accessToken) {
+        setSuccessMessage('Password reset successfully! Redirecting to dashboard...');
+        sessionStorage.removeItem('resetEmail');
+        
+        // Redirect to dashboard after 2 seconds
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 2000);
+      } else {
+        setServerError(response?.message || 'Failed to reset password. Please try again.');
       }
-
-      setSuccessMessage('Password reset successfully! Redirecting to login...');
-      
-      // Redirect to login after 2 seconds
-      setTimeout(() => {
-        router.push('/auth/login');
-      }, 2000);
-    } catch (error) {
-      setServerError('An error occurred. Please try again.');
+    } catch (error: any) {
+      const errorMessage =
+        error?.message ||
+        error?.error?.message ||
+        'An error occurred. Please try again.';
+      setServerError(errorMessage);
       console.error('Reset password error:', error);
     } finally {
       setIsLoading(false);
     }
   };
-
-  if (!token || !email) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center px-4">
-        <div className="w-full max-w-md relative z-10">
-          <div className="bg-white rounded-2xl shadow-xl p-8">
-            <div className="text-center">
-              <div className="text-red-600 text-5xl mb-4">⚠️</div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">Invalid Link</h1>
-              <p className="text-gray-600 mb-6">The password reset link is invalid or has expired.</p>
-              <Link
-                href="/auth/forgot-password"
-                className="inline-block px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg hover:shadow-lg transition"
-              >
-                Request New Link
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center px-4 py-12">
@@ -159,6 +147,30 @@ export default function ResetPasswordPage() {
 
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+            {/* OTP Field */}
+            <div>
+              <label htmlFor="otp" className="block text-sm font-semibold text-gray-900 mb-2">
+                OTP (One-Time Password)
+              </label>
+              <input
+                {...register('otp')}
+                type="text"
+                id="otp"
+                placeholder="000000"
+                maxLength={6}
+                inputMode="numeric"
+                className={`w-full px-4 py-3 rounded-lg border-2 bg-gray-50 focus:bg-white transition text-center text-2xl letter-spacing: 0.5em ${
+                  errors.otp ? 'border-red-500 focus:border-red-600' : 'border-gray-200 focus:border-blue-600'
+                } focus:outline-none focus:ring-0 text-gray-900 placeholder:text-gray-400`}
+              />
+              {errors.otp && (
+                <p className="mt-2 text-sm text-red-600 flex items-center">
+                  <span className="mr-1">✕</span> {errors.otp.message}
+                </p>
+              )}
+              <p className="text-xs text-gray-600 mt-1">Check your email for the 6-digit OTP</p>
+            </div>
+
             {/* New Password Field */}
             <div>
               <label htmlFor="password" className="block text-sm font-semibold text-gray-900 mb-2">

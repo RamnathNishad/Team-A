@@ -12,65 +12,65 @@ import { Exclude } from 'class-transformer';
 @Index(['email'], { unique: true })
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  firstName: string;
+  firstName!: string;
 
   @Column()
-  lastName: string;
+  lastName!: string;
 
   @Column({ unique: true })
-  email: string;
+  email!: string;
 
   @Column()
   @Exclude()
-  password: string;
+  password!: string;
 
   @Column({ nullable: true })
-  phoneNumber: string;
+  phoneNumber!: string;
 
   @Column({ default: false })
-  isEmailVerified: boolean;
+  isEmailVerified!: boolean;
 
   @Column({ default: false })
-  isPhoneVerified: boolean;
+  isPhoneVerified!: boolean;
 
   @Column({ nullable: true })
-  dateOfBirth: Date;
+  dateOfBirth!: Date;
 
   @Column({ nullable: true })
-  address: string;
+  address!: string;
 
   @Column({ nullable: true })
-  city: string;
+  city!: string;
 
   @Column({ nullable: true })
-  state: string;
+  state!: string;
 
   @Column({ nullable: true })
-  zipCode: string;
+  zipCode!: string;
 
   @Column({ nullable: true })
-  panNumber: string;
+  panNumber!: string;
 
   @Column({ nullable: true })
-  aadhaarNumber: string;
+  aadhaarNumber!: string;
 
   @Column({ default: true })
-  isActive: boolean;
+  isActive!: boolean;
 
   @Column({ default: 'user' })
-  role: string; // user, admin, manager
+  role!: string; // user, admin, manager
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 
   @Column({ nullable: true })
-  lastLoginAt: Date;
+  lastLoginAt!: Date;
 
   // Virtual property (not stored in DB)
   get fullName(): string {

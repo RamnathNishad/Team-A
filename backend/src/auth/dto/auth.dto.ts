@@ -11,14 +11,14 @@ import {
 export class RegisterDto {
   @IsString()
   @IsNotEmpty()
-  firstName: string;
+  firstName!: string;
 
   @IsString()
   @IsNotEmpty()
-  lastName: string;
+  lastName!: string;
 
   @IsEmail()
-  email: string;
+  email!: string;
 
   @IsString()
   @MinLength(8, { message: 'Password must be at least 8 characters' })
@@ -26,11 +26,11 @@ export class RegisterDto {
   @Matches(/[a-z]/, { message: 'Password must contain lowercase letter' })
   @Matches(/[0-9]/, { message: 'Password must contain number' })
   @Matches(/[^A-Za-z0-9]/, { message: 'Password must contain special character' })
-  password: string;
+  password!: string;
 
   @IsString()
   @IsNotEmpty()
-  confirmPassword: string;
+  confirmPassword!: string;
 
   @IsOptional()
   @IsString()
@@ -59,11 +59,11 @@ export class RegisterDto {
 
 export class LoginDto {
   @IsEmail()
-  email: string;
+  email!: string;
 
   @IsString()
   @IsNotEmpty()
-  password: string;
+  password!: string;
 
   @IsOptional()
   rememberMe?: boolean;
@@ -71,12 +71,12 @@ export class LoginDto {
 
 export class VerifyOtpDto {
   @IsEmail()
-  email: string;
+  email!: string;
 
   @IsString()
   @IsNotEmpty()
   @Matches(/^\d{6}$/, { message: 'OTP must be exactly 6 digits' })
-  otp: string;
+  otp!: string;
 
   @IsString()
   @IsOptional()
@@ -85,7 +85,7 @@ export class VerifyOtpDto {
 
 export class SendOtpDto {
   @IsEmail()
-  email: string;
+  email!: string;
 
   @IsString()
   @IsOptional()
@@ -94,11 +94,11 @@ export class SendOtpDto {
 
 export class ResetPasswordDto {
   @IsEmail()
-  email: string;
+  email!: string;
 
   @IsString()
   @IsNotEmpty()
-  token: string;
+  token!: string;
 
   @IsString()
   @MinLength(8, { message: 'Password must be at least 8 characters' })
@@ -106,18 +106,18 @@ export class ResetPasswordDto {
   @Matches(/[a-z]/, { message: 'Password must contain lowercase letter' })
   @Matches(/[0-9]/, { message: 'Password must contain number' })
   @Matches(/[^A-Za-z0-9]/, { message: 'Password must contain special character' })
-  newPassword: string;
+  newPassword!: string;
 }
 
 export class ForgotPasswordDto {
   @IsEmail()
-  email: string;
+  email!: string;
 }
 
 export class ChangePasswordDto {
   @IsString()
   @IsNotEmpty()
-  currentPassword: string;
+  currentPassword!: string;
 
   @IsString()
   @MinLength(8, { message: 'Password must be at least 8 characters' })
@@ -125,5 +125,5 @@ export class ChangePasswordDto {
   @Matches(/[a-z]/, { message: 'Password must contain lowercase letter' })
   @Matches(/[0-9]/, { message: 'Password must contain number' })
   @Matches(/[^A-Za-z0-9]/, { message: 'Password must contain special character' })
-  newPassword: string;
+  newPassword!: string;
 }

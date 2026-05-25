@@ -179,6 +179,6 @@ export class AuthController {
   @ApiOperation({ summary: 'Refresh access token' })
   async refreshToken(@Req() req: any): Promise<AuthResponseDto> {
     // TODO: Implement refresh token logic
-    return null;
+    throw new BadRequestException('Refresh token not yet implemented');
   }
 }

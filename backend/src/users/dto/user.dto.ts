@@ -2,13 +2,13 @@ import { IsString, IsEmail, IsOptional, IsDateString } from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
-  firstName: string;
+  firstName!: string;
 
   @IsString()
-  lastName: string;
+  lastName!: string;
 
   @IsEmail()
-  email: string;
+  email!: string;
 
   @IsOptional()
   @IsString()
@@ -86,10 +86,10 @@ export class UpdateUserDto {
 }
 
 export class UserProfileDto {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
+  id!: string;
+  email!: string;
+  firstName!: string;
+  lastName!: string;
   phoneNumber?: string;
   dateOfBirth?: Date;
   address?: string;
@@ -98,9 +98,9 @@ export class UserProfileDto {
   zipCode?: string;
   panNumber?: string;
   aadhaarNumber?: string;
-  isEmailVerified: boolean;
-  isPhoneVerified: boolean;
-  role: string;
-  createdAt: Date;
-  updatedAt: Date;
+  isEmailVerified!: boolean;
+  isPhoneVerified!: boolean;
+  role!: string;
+  createdAt!: Date;
+  updatedAt!: Date;
 }

@@ -1,33 +1,58 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store';
-import { logout } from '@/store/slices/authSlice';
+import { logout, updateUser } from '@/store/slices/authSlice';
 import { Header } from '@/components/layouts/Header';
+import { authService } from '@/services/authService';
 
 export default function DashboardPage() {
   const router = useRouter();
   const dispatch = useDispatch();
   const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isAuthenticated) {
       router.push('/auth/login');
+      return;
     }
-  }, [isAuthenticated, router]);
+
+    // Fetch current user on mount
+    const fetchCurrentUser = async () => {
+      try {
+        setIsLoadingUser(true);
+        const response = await authService.getCurrentUser();
+        
+        if (response?.id) {
+          dispatch(
+            updateUser({
+              id: response.id,
+              email: response.email,
+              name: response.firstName && response.lastName 
+                ? `${response.firstName} ${response.lastName}` 
+                : response.email,
+            })
+          );
+        }
+      } catch (error) {
+        console.error('Failed to fetch current user:', error);
+        // If token is invalid, redirect to login
+        router.push('/auth/login');
+      } finally {
+        setIsLoadingUser(false);
+      }
+    };
+
+    fetchCurrentUser();
+  }, [isAuthenticated, router, dispatch]);
 
   const handleLogout = async () => {
     try {
-      // Call logout API
-      await fetch('/api/v1/auth/logout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      await authService.logout();
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
@@ -36,7 +61,7 @@ export default function DashboardPage() {
     }
   };
 
-  if (!isAuthenticated || !user) {
+  if (!isAuthenticated || !user || isLoadingUser) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">

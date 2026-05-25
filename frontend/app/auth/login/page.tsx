@@ -1,11 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { authService } from '@/services/authService';
+import { useDispatch } from 'react-redux';
+import { setAuth, setAuthError, setAuthLoading } from '@/store/slices/authSlice';
 
 // Validation Schema based on BRD requirements
 const loginSchema = z.object({
@@ -18,6 +21,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState('');
@@ -26,49 +30,60 @@ export default function LoginPage() {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
+    setValue,
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     mode: 'onBlur',
   });
 
+  // Load remembered email on mount
+  useEffect(() => {
+    const remembered = authService.getRememberedEmail();
+    if (remembered) {
+      setValue('email', remembered);
+      setValue('rememberMe', true);
+    }
+  }, [setValue]);
+
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     setServerError('');
+    dispatch(setAuthLoading(true));
 
     try {
-      // Call your authentication API here
-      const response = await fetch('/api/v1/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-          rememberMe: data.rememberMe,
-        }),
+      const response = await authService.login({
+        email: data.email,
+        password: data.password,
+        rememberMe: data.rememberMe,
       });
 
-      const result = await response.json();
+      if (response?.user && response?.accessToken) {
+        // Update Redux store
+        dispatch(
+          setAuth({
+            user: response.user,
+            token: response.accessToken,
+            isAuthenticated: true,
+          })
+        );
 
-      if (!response.ok) {
-        setServerError(result.message || 'Invalid email or password');
-        return;
+        // Redirect to dashboard
+        router.push('/dashboard');
+      } else {
+        setServerError(response?.message || 'Login failed. Please try again.');
+        dispatch(setAuthError(response?.message || 'Login failed'));
       }
-
-      // Store token and redirect to dashboard
-      localStorage.setItem('token', result.token);
-      if (data.rememberMe) {
-        localStorage.setItem('rememberEmail', data.email);
-      }
-
-      router.push('/dashboard');
-    } catch (error) {
-      setServerError('An error occurred. Please try again.');
+    } catch (error: any) {
+      const errorMessage =
+        error?.message ||
+        error?.error?.message ||
+        'Invalid email or password. Please try again.';
+      setServerError(errorMessage);
+      dispatch(setAuthError(errorMessage));
       console.error('Login error:', error);
     } finally {
       setIsLoading(false);
+      dispatch(setAuthLoading(false));
     }
   };
 
