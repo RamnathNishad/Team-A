@@ -1,0 +1,66 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: smartloan_postgres
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-smartloan}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-smartloan_pass_123}
+      POSTGRES_DB: ${DB_DATABASE:-smartloan_db}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - smartloan_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U smartloan"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: smartloan_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@smartloan.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - smartloan_network
+
+  backend:
+    build: .
+    container_name: smartloan_backend
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: ${DB_USERNAME:-smartloan}
+      DB_PASSWORD: ${DB_PASSWORD:-smartloan_pass_123}
+      DB_DATABASE: ${DB_DATABASE:-smartloan_db}
+      JWT_SECRET: ${JWT_SECRET:-your_secret_key}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - smartloan_network
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run start:dev
+
+volumes:
+  postgres_data:
+
+networks:
+  smartloan_network:
+    driver: bridge
